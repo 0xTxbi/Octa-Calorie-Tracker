@@ -129,6 +129,29 @@ const ItemCtrl = (function () {
 
 		},
 
+		deleteItem: function (id) {
+
+			// Get IDs
+			ids = data.items.map(function (item) {
+
+				return item.id;
+
+			});
+
+			// Obtian the index
+			const index = ids.indexOf(id);
+
+			// Remove item
+			data.items.splice(index, 1);
+
+		},
+
+		clearAllItems: function () {
+
+			data.items = [];
+
+		},
+
 		setCurrentItem: function (item) {
 
 			data.currentItem = item;
@@ -178,6 +201,7 @@ const UICtrl = (function () {
 
 	const UISelectors = {
 
+		clearBtn: '.clear-btn',
 		itemList: '#item-list',
 		listItems: '#item-list li',
 		addBtn: '.add-btn',
@@ -281,6 +305,16 @@ const UICtrl = (function () {
 
 		},
 
+		deleteListItem: function (id) {
+
+			const itemID = `#item-${id}`;
+
+			const item = document.querySelector(itemID);
+
+			item.remove();
+
+		},
+
 		clearInputFields: function () {
 
 			document.querySelector(UISelectors.mealItem).value = '';
@@ -293,6 +327,21 @@ const UICtrl = (function () {
 			document.querySelector(UISelectors.mealItem).value = ItemCtrl.getCurrentItem().name;
 			document.querySelector(UISelectors.caloriesItem).value = ItemCtrl.getCurrentItem().calories;
 			UICtrl.showEditState();
+
+		},
+
+		removeItems: function () {
+
+			let listItems = document.querySelectorAll(UISelectors.listItems);
+
+			// Convert NodeList into an array
+			listItems = Array.from(listItems);
+
+			listItems.forEach(function (listItem) {
+
+				listItem.remove();
+
+			})
 
 		},
 
@@ -370,6 +419,15 @@ const App = (function (ItemCtrl, UICtrl) {
 
 		// Update Item event
 		document.querySelector(UISelectors.updateBtn).addEventListener('click', itemUpdateSubmit);
+
+		// Delete item event
+		document.querySelector(UISelectors.deleteBtn).addEventListener('click', itemDeleteSubmit);
+
+		// Back button event
+		document.querySelector(UISelectors.backBtn).addEventListener('click', UICtrl.clearEditState);
+
+		// Clear items event
+		document.querySelector(UISelectors.clearBtn).addEventListener('click', clearAllItemsClick);
 
 	}
 
@@ -462,6 +520,50 @@ const App = (function (ItemCtrl, UICtrl) {
 		UICtrl.clearEditState();
 
 		e.preventDefault();
+
+	}
+
+	// Items delete
+	const itemDeleteSubmit = function (e) {
+
+		// Obtain current item
+		const currentItem = ItemCtrl.getCurrentItem();
+
+		// Delete from the data structure
+		ItemCtrl.deleteItem(currentItem.id);
+
+		// Delete from the UI
+		UICtrl.deleteListItem(currentItem.id);
+
+		// Get total calories
+		const totalCalories = ItemCtrl.getTotalCalories();
+
+		// Display total calories in the UI
+		UICtrl.showTotalCalories(totalCalories);
+
+		UICtrl.clearEditState();
+
+		e.preventDefault();
+
+	}
+
+	// Clear all items
+	const clearAllItemsClick = function () {
+
+		// Delete all items from the data structure
+		ItemCtrl.clearAllItems();
+
+		// Get total calories
+		const totalCalories = ItemCtrl.getTotalCalories();
+
+		// Display total calories in the UI
+		UICtrl.showTotalCalories(totalCalories);
+
+		// Clear all items from the UI
+		UICtrl.removeItems();
+
+		// Hide the empty List
+		UICtrl.hideList();
 
 	}
 
