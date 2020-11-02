@@ -106,7 +106,7 @@ const ItemCtrl = (function () {
 
 		setCurrentItem: function (item) {
 
-			data.currentItem = item
+			data.currentItem = item;
 
 		},
 
@@ -345,19 +345,19 @@ const App = (function (ItemCtrl, UICtrl) {
 			// Get the list item's ID (item-0, etc)
 			const listId = e.target.parentNode.parentNode.id;
 
-			// Break into an array
+			// Split element's ID value into an array
 			const listIdArray = listId.split('-');
 
 			// Obtain the actual ID
 			const id = parseInt(listIdArray[1]);
 
-			// Get item
+			// Get item from data structure using the obtained value
 			const itemToEdit = ItemCtrl.getItemById(id);
 
-			// Set the current item
+			// Set the current item to that of the selected data
 			ItemCtrl.setCurrentItem(itemToEdit);
 
-			// Add item to the input form
+			// Add the obtained item to the form input
 			UICtrl.addItemToForm();
 
 
