@@ -424,7 +424,13 @@ const App = (function (ItemCtrl, UICtrl) {
 		document.querySelector(UISelectors.deleteBtn).addEventListener('click', itemDeleteSubmit);
 
 		// Back button event
-		document.querySelector(UISelectors.backBtn).addEventListener('click', UICtrl.clearEditState);
+		document.querySelector(UISelectors.backBtn).addEventListener('click', function (e) {
+
+			UICtrl.clearEditState();
+
+			e.preventDefault();
+
+		});
 
 		// Clear items event
 		document.querySelector(UISelectors.clearBtn).addEventListener('click', clearAllItemsClick);
@@ -580,7 +586,7 @@ const App = (function (ItemCtrl, UICtrl) {
 			const items = ItemCtrl.getItems();
 
 			// Check if any items exist in the list
-			if (items.length == 0) {
+			if (items.length === 0) {
 
 				UICtrl.hideList();
 
